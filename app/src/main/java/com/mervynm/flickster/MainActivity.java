@@ -6,10 +6,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.mervynm.flickster.adapters.MovieAdapter;
+import com.mervynm.flickster.databinding.ActivityMainBinding;
 import com.mervynm.flickster.models.Movie;
 
 import org.json.JSONArray;
@@ -33,10 +35,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        RecyclerView recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
-        movies = new ArrayList<>();
 
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
+
+        RecyclerView recyclerViewMovies = binding.recyclerViewMovies;
+        movies = new ArrayList<>();
         final MovieAdapter movieAdapter = new MovieAdapter(this, movies);
         recyclerViewMovies.setAdapter(movieAdapter);
         recyclerViewMovies.setLayoutManager(new LinearLayoutManager(this));
@@ -45,18 +50,14 @@ public class MainActivity extends AppCompatActivity {
         client.get(NOW_PLAYING_URL, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.d(TAG, "onSuccess");
                 JSONObject jsonObject = json.jsonObject;
                 try {
                     JSONArray results = jsonObject.getJSONArray("results");
-                    Log.i(TAG, "Results: " + results.toString());
                     movies.addAll(Movie.fromJsonArray((results)));
                     movieAdapter.notifyDataSetChanged();
-                    Log.i(TAG, "Movies: " + movies.size());
                 } catch (JSONException e) {
                     Log.e(TAG, "Hit json exception", e);
                 }
-
             }
 
             @Override
