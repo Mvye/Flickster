@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.mervynm.flickster.MovieDetailsActivity;
 import com.mervynm.flickster.R;
+import com.mervynm.flickster.databinding.ItemMovieBinding;
 import com.mervynm.flickster.models.Movie;
 
 import org.parceler.Parcels;
@@ -39,8 +40,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.d("MovieAdapter", "onCreateViewHolder");
-        View movieView = LayoutInflater.from(context).inflate(R.layout.item_movie, parent, false);
-        return new ViewHolder(movieView);
+        return new ViewHolder(ItemMovieBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
@@ -62,12 +62,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         TextView movieOverview;
         ImageView moviePosterImage;
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            movieTitle = itemView.findViewById(R.id.movieTitle);
-            movieOverview = itemView.findViewById(R.id.movieOverview);
-            moviePosterImage = itemView.findViewById(R.id.moviePosterImage);
-            itemView.setOnClickListener(this);
+        ItemMovieBinding binding;
+
+        public ViewHolder(@NonNull ItemMovieBinding b) {
+            super(b.getRoot());
+            binding = b;
+            movieTitle = b.movieTitle;
+            movieOverview = b.movieOverview;
+            moviePosterImage = b.moviePosterImage;
+            b.getRoot().setOnClickListener(this);
         }
 
         @Override

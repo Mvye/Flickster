@@ -20,7 +20,11 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class MovieDetailsActivity extends AppCompatActivity {
 
+    public static final String MOVIE_VIDEO_URL = "https://api.themoviedb.org/3/movie/";
+    public static final String API_URL = "/videos?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
+
     Movie movie;
+    String movieURL;
 
     TextView movieActivityTitle;
     TextView movieActivityOverview;
@@ -42,6 +46,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         movie = (Movie) Parcels.unwrap(getIntent().getParcelableExtra(Movie.class.getSimpleName()));
         Log.d("MovieDetailsActivity", String.format("Showing details for '%s'", movie.getTitle()));
+
+        movieURL = MOVIE_VIDEO_URL + movie.getMovieID() + API_URL;
 
         movieActivityTitle.setText(movie.getTitle());
         movieActivityOverview.setText(movie.getOverview());

@@ -18,7 +18,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerViewMovies = binding.recyclerViewMovies;
         movies = new ArrayList<>();
         final MovieAdapter movieAdapter = new MovieAdapter(this, movies);
-        recyclerViewMovies.setAdapter(movieAdapter);
-        recyclerViewMovies.setLayoutManager(new LinearLayoutManager(this));
+        binding.recyclerViewMovies.setAdapter(movieAdapter);
+        binding.recyclerViewMovies.setLayoutManager(new LinearLayoutManager(this));
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(NOW_PLAYING_URL, new JsonHttpResponseHandler() {
