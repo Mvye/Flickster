@@ -42,9 +42,13 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerViewMovies = binding.recyclerViewMovies;
         movies = new ArrayList<>();
         final MovieAdapter movieAdapter = new MovieAdapter(this, movies);
-        binding.recyclerViewMovies.setAdapter(movieAdapter);
-        binding.recyclerViewMovies.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewMovies.setAdapter(movieAdapter);
+        recyclerViewMovies.setLayoutManager(new LinearLayoutManager(this));
 
+        fetchInitialMovieData(movieAdapter);
+    }
+
+    private void fetchInitialMovieData(final MovieAdapter movieAdapter) {
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(NOW_PLAYING_URL, new JsonHttpResponseHandler() {
             @Override
@@ -58,12 +62,10 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "Hit json exception", e);
                 }
             }
-
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.d(TAG, "onFailure");
             }
         });
-
     }
 }
