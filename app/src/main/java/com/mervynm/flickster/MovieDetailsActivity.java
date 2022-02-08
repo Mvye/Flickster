@@ -11,17 +11,28 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.codepath.asynchttpclient.AsyncHttpClient;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.google.android.youtube.player.YouTubeBaseActivity;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerView;
 import com.mervynm.flickster.databinding.ActivityMovieDetailsBinding;
 import com.mervynm.flickster.models.Movie;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+import okhttp3.Headers;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends YouTubeBaseActivity {
 
     public static final String MOVIE_VIDEO_URL = "https://api.themoviedb.org/3/movie/";
     public static final String API_URL = "/videos?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
+    private static final String YOUTUBE_API_KEY = "AIzaSyBED99w1MMd3MORKj7bm6ecmVud5mDH6IM";
 
     Movie movie;
     String movieURL;
@@ -30,6 +41,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     TextView movieActivityOverview;
     RatingBar movieAverageRating;
     ImageView movieBackdrop;
+
+    YouTubePlayerView youTubePlayerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +56,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
         movieActivityOverview = binding.movieActivityOverview;
         movieAverageRating = binding.movieAverageRating;
         movieBackdrop = binding.movieBackdrop;
+        youTubePlayerView = binding.youtubePlayer;
 
         movie = (Movie) Parcels.unwrap(getIntent().getParcelableExtra(Movie.class.getSimpleName()));
         Log.d("MovieDetailsActivity", String.format("Showing details for '%s'", movie.getTitle()));
-
-        movieURL = MOVIE_VIDEO_URL + movie.getMovieID() + API_URL;
 
         movieActivityTitle.setText(movie.getTitle());
         movieActivityOverview.setText(movie.getOverview());
@@ -59,5 +71,50 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 .placeholder(R.drawable.flicks_backdrop_placeholder)
                 .transform(new RoundedCornersTransformation(30,10))
                 .into(movieBackdrop);
+
+        movieURL = MOVIE_VIDEO_URL + movie.getMovieID() + API_URL;
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(movieURL, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                JSONObject jsonObject = json.jsonObject;
+                try {
+                    JSONArray results = jsonObject.getJSONArray("results");
+                    if (results.length() == 0) {
+                        youTubePlayerView.setVisibility(View.GONE);
+                        movieBackdrop.setVisibility(View.VISIBLE);
+                        return;
+                    }
+                    movieBackdrop.setVisibility(View.GONE);
+                    youTubePlayerView.setVisibility(View.VISIBLE);
+                    String youtubeKey = results.getJSONObject(0).getString("key");
+                    initializeYoutube(youtubeKey);
+
+                } catch (JSONException e) {
+                    Log.e("MovieDetailsActivity", "Hit json exception", e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+
+            }
+        });
+    }
+
+    private void initializeYoutube(String youtubeKey) {
+        youTubePlayerView.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                Log.d("MovieDetailsActivity","onInitializationSuccess");
+                youTubePlayer.cueVideo(youtubeKey);
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                Log.d("MovieDetailsActivity","onInitializationFailure");
+            }
+        });
     }
 }

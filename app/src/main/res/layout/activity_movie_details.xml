@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".MovieDetailsActivity">
 
+    <com.google.android.youtube.player.YouTubePlayerView
+        android:id="@+id/youtubePlayer"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"></com.google.android.youtube.player.YouTubePlayerView>
+
     <TextView
         android:id="@+id/movieActivityOverview"
         android:layout_width="wrap_content"
@@ -45,9 +50,8 @@
         android:id="@+id/movieBackdrop"
         android:layout_width="match_parent"
         android:layout_height="230dp"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/youtubePlayer"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="0dp"
         android:layout_marginBottom="0dp"
         tools:srcCompat="@tools:sample/avatars" />
 
