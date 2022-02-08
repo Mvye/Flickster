@@ -32,6 +32,7 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
 
     public static final String MOVIE_VIDEO_URL = "https://api.themoviedb.org/3/movie/";
     public static final String API_URL = "/videos?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
+    public static final Double AUTOPLAY_MINIMUM_SCORE = 7.5;
 
     Movie movie;
     String movieURL;
@@ -107,7 +108,13 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 Log.d("MovieDetailsActivity","onInitializationSuccess");
-                youTubePlayer.cueVideo(youtubeKey);
+                Log.d("MovieDetailActivity", "Voter Average: " + movie.getVoteAverage().toString());
+                if (movie.getVoteAverage() > AUTOPLAY_MINIMUM_SCORE) {
+                    youTubePlayer.loadVideo(youtubeKey);
+                }
+                else {
+                    youTubePlayer.cueVideo(youtubeKey);
+                }
             }
 
             @Override
