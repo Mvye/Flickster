@@ -30,3 +30,6 @@ google-services.json
 *.hprof
 
 .DS_Store
+
+# Strings.xml where API key is stored
+app/src/main/res/values/strings.xml

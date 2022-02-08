@@ -32,7 +32,6 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
 
     public static final String MOVIE_VIDEO_URL = "https://api.themoviedb.org/3/movie/";
     public static final String API_URL = "/videos?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
-    private static final String YOUTUBE_API_KEY = "AIzaSyBED99w1MMd3MORKj7bm6ecmVud5mDH6IM";
 
     Movie movie;
     String movieURL;
@@ -104,7 +103,7 @@ public class MovieDetailsActivity extends YouTubeBaseActivity {
     }
 
     private void initializeYoutube(String youtubeKey) {
-        youTubePlayerView.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+        youTubePlayerView.initialize(getResources().getString(R.string.YOUTUBE_API_KEY), new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 Log.d("MovieDetailsActivity","onInitializationSuccess");
